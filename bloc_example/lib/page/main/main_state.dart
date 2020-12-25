@@ -6,5 +6,15 @@ class MainState {
 
   bool isExpanded;
 
-  MainState({this.selectIndex, this.isExpanded});
+  MainState init() {
+    return MainState()
+      ..selectIndex = 0
+      ..isExpanded = false;
+  }
+
+  MainState clone() {
+    return MainState()
+      ..selectIndex = selectIndex
+      ..isExpanded = isExpanded;
+  }
 }

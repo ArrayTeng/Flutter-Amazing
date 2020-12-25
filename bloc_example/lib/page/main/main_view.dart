@@ -19,7 +19,7 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => MainBloc(),
+      create: (BuildContext context) => MainBloc()..add(MainInitEvent()),
       child: BodyPage(),
     );
   }
