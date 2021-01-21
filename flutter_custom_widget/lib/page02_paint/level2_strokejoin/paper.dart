@@ -17,7 +17,8 @@ class PaperPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     //drawStrokeCap(canvas);
-    drawStrokeJoin(canvas);
+    //drawStrokeJoin(canvas);
+    drawStrokeMiterLimit(canvas);
   }
 
   //线帽类型
@@ -66,26 +67,48 @@ class PaperPainter extends CustomPainter {
     canvas.drawPath(path, paint..strokeJoin = StrokeJoin.bevel);
 
     path.reset();
-    path.moveTo(50+150.0, 50);
-    path.lineTo(50+150.0, 150);
+    path.moveTo(50 + 150.0, 50);
+    path.lineTo(50 + 150.0, 150);
     //相对于当前位置的相对坐标
     path.relativeLineTo(100, -50);
     path.relativeLineTo(0, 100);
     canvas.drawPath(path, paint..strokeJoin = StrokeJoin.miter);
 
     path.reset();
-    path.moveTo(50+150.0+150.0, 50);
-    path.lineTo(50+150.0+150.0, 150);
+    path.moveTo(50 + 150.0 + 150.0, 50);
+    path.lineTo(50 + 150.0 + 150.0, 150);
     //相对于当前位置的相对坐标
     path.relativeLineTo(100, -50);
     path.relativeLineTo(0, 100);
     canvas.drawPath(path, paint..strokeJoin = StrokeJoin.round);
-
   }
 
   //斜接限制
-  void drawStrokeMiterLimit(Canvas canvas){
+  void drawStrokeMiterLimit(Canvas canvas) {
+    Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      //斜接限制只适用于锐角
+      ..strokeJoin = StrokeJoin.miter
+      ..strokeWidth = 20
+      ..color = Colors.blue;
 
+    Path path = Path();
+
+    for (int i = 0; i < 4; i++) {
+      path.reset();
+      path.moveTo(50 + i * 150.0, 50);
+      path.lineTo(50 + i * 150.0, 150);
+      path.relativeLineTo(100, -(40.0 * i+20));
+      canvas.drawPath(path, paint..strokeMiterLimit = 2);
+    }
+
+    for (int i = 0; i < 4; i++) {
+      path.reset();
+      path.moveTo(50 + i * 150.0, 50 + 150.0);
+      path.lineTo(50 + i * 150.0, 150 + 150.0);
+      path.relativeLineTo(100, -(40.0 * i+20));
+      canvas.drawPath(path, paint..strokeMiterLimit = 3);
+    }
   }
 
   @override
