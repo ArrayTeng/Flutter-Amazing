@@ -36,11 +36,48 @@ class PaperPainter extends CustomPainter {
     canvas.translate(size.width / 2, size.height / 2);
     _drawGrid(canvas, size);
 
+    _drawAxis(canvas,size);
+
     _drawPointsWithPoints(canvas, size);
 
     //_drawPointsWithLines(canvas,size);
 
     _drawPointsWithPolygon(canvas, size);
+
+    _drawRect(canvas);
+  }
+
+  //类矩形绘制 drawRect、drawRRect、drawDRRect
+  void _drawRect(Canvas canvas){
+    Paint paint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = Colors.blue;
+
+    Rect rect = Rect.fromCenter(center: Offset(200,-70),width: 100,height: 100);
+    canvas.drawRect(rect, paint);
+  }
+
+  //绘制x轴和y周坐标轴
+  void _drawAxis(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..strokeWidth = 1.5
+      ..color = Colors.blue;
+
+    canvas.drawLine(Offset(0, 0), Offset(0, -size.height/2), paint);
+
+    canvas.drawLine(Offset(0, 0), Offset(0, size.height/2), paint);
+
+    canvas.drawLine(Offset(0, 0), Offset(-size.width/2,0), paint);
+
+    canvas.drawLine(Offset(0, 0), Offset(-size.width/2,0), paint);
+
+    canvas.drawLine(Offset(0, 0), Offset(size.width/2 - 10,0), paint);
+
+    canvas.drawLine(Offset(size.width/2 - 10,0), Offset(size.width/2 - 10 - 10,-10), paint);
+
+    canvas.drawLine(Offset(size.width/2 - 10,0), Offset(size.width/2 - 10 - 10,10), paint);
+
+
   }
 
   //绘制点
