@@ -21,7 +21,7 @@ class _PaperState extends State<Paper> {
     _loadImage();
   }
 
-  void _loadImage() async{
+  void _loadImage() async {
     _image = await loadImageFromAssets('assets/images/wy_300x200.jpg');
     setState(() {});
   }
@@ -56,13 +56,44 @@ class PaperPainter extends CustomPainter {
     _drawAxis(canvas, size);
 
     _drawImage(canvas);
+
+    _drawImageRect(canvas);
   }
 
   void _drawImage(Canvas canvas) {
     if (image != null) {
       canvas.drawImage(
-        //这里的Offset可以看作是图片左上角的位置
-          image, Offset(-image.width / 2, -image.height / 2), _paint);
+          //这里的Offset可以看作是图片左上角的位置
+          image,
+          Offset(-image.width / 2, -image.height / 2),
+          _paint);
+    }
+  }
+
+  void _drawImageRect(Canvas canvas) {
+    if (image != null) {
+      canvas.drawImageRect(
+          image,
+          Rect.fromCenter(
+              center: Offset(image.width / 2, image.height / 2),
+              width: 60,
+              height: 60),
+          Rect.fromLTRB(0, 0, 100, 100).translate(200, 0),
+          _paint);
+
+      canvas.drawImageRect(
+          image,
+          Rect.fromLTRB(image.width / 4, 0,
+              image.width/2, image.height / 4),
+          Rect.fromLTRB(0,-80, 80, 0).translate(200, 0),
+          _paint);
+
+      canvas.drawImageRect(
+          image,
+          Rect.fromCenter(
+              center: Offset(image.width/2+60, image.height/2), width: 60, height: 60),
+          Rect.fromLTRB(0, 0, 100, 100).translate(-280, 50),
+          _paint);
     }
   }
 
