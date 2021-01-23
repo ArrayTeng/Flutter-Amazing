@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'dart:ui' as ui;
 
@@ -16,13 +17,16 @@ class _PaperState extends State<Paper> {
 
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+    SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
     //从assets文件中加载图片
     _loadImage();
   }
 
   void _loadImage() async {
-    _image = await loadImageFromAssets('assets/images/wy_300x200.jpg');
+    _image = await loadImageFromAssets('assets/images/right_chat.png');
     setState(() {});
   }
 
@@ -54,48 +58,17 @@ class PaperPainter extends CustomPainter {
     canvas.translate(size.width / 2, size.height / 2);
     _drawGrid(canvas, size);
     _drawAxis(canvas, size);
+    _drawNineImage(canvas);
 
-    _drawImage(canvas);
-
-    _drawImageRect(canvas);
   }
 
-  void _drawImage(Canvas canvas) {
-    if (image != null) {
-      canvas.drawImage(
-          //这里的Offset可以看作是图片左上角的位置
-          image,
-          Offset(-image.width / 2, -image.height / 2),
-          _paint);
+  void _drawNineImage(Canvas canvas){
+    if(image!=null){
+      canvas.drawImageNine(image, Rect.fromCenter(center: Offset(image.width/2, image.height -6.0),width: image.width -20.0,height: 2 ),
+          Rect.fromCenter(center: Offset(0, 0),width: 300,height: 120), _paint);
     }
   }
 
-  void _drawImageRect(Canvas canvas) {
-    if (image != null) {
-      canvas.drawImageRect(
-          image,
-          Rect.fromCenter(
-              center: Offset(image.width / 2, image.height / 2),
-              width: 60,
-              height: 60),
-          Rect.fromLTRB(0, 0, 100, 100).translate(200, 0),
-          _paint);
-
-      canvas.drawImageRect(
-          image,
-          Rect.fromLTRB(image.width / 4, 0,
-              image.width/2, image.height / 4),
-          Rect.fromLTRB(0,-80, 80, 0).translate(200, 0),
-          _paint);
-
-      canvas.drawImageRect(
-          image,
-          Rect.fromCenter(
-              center: Offset(image.width/2+60, image.height/2), width: 60, height: 60),
-          Rect.fromLTRB(0, 0, 100, 100).translate(-280, 50),
-          _paint);
-    }
-  }
 
   void _drawBottomRight(Canvas canvas, Size size) {
     canvas.save();
