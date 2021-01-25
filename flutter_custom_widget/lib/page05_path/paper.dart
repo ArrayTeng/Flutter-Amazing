@@ -1,9 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
-import 'dart:ui' as ui;
+import 'package:flutter_custom_widget/utils/coordinate.dart';
 
 class Paper extends StatefulWidget {
   @override
@@ -51,31 +52,81 @@ class PaperPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     canvas.translate(size.width / 2, size.height / 2);
-    _drawGrid(canvas, size);
-    _drawAxis(canvas, size);
+    //_drawGrid(canvas, size);
 
-//    _drawLine(canvas);
+    Coordinate coordinate = Coordinate(25);
+    coordinate.print(canvas, size);
 
-    _drawArc(canvas);
+    //_drawLine(canvas);
+
+    //_drawArc(canvas);
+
+    //_drawArcToPointWithRelativeArcToPoint(canvas);
+
+    //todo 圆锥曲线
+    //todo 二阶贝塞尔
+    //todo 三阶贝塞尔
+    //todo 添加类矩形
+    //todo 添加类圆形
+    //todo 添加多边形路径 、 添加路径
+  }
+
+
+
+  void _drawArcToPointWithRelativeArcToPoint(Canvas canvas) {
+    Path path = Path();
+    _paint
+      ..color = Colors.blue
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    path.lineTo(80, -40);
+
+    path
+      ..arcToPoint(Offset(40, 40), radius: Radius.circular(60), largeArc: false)
+      ..close();
+    canvas.drawPath(path, _paint);
+
+    path.reset();
+
+    canvas.translate(-150, 0);
+    path.lineTo(80, -40);
+
+    path
+      ..arcToPoint(Offset(40, 40),
+          radius: Radius.circular(60), largeArc: true, clockwise: false)
+      ..close();
+    canvas.drawPath(path, _paint);
+    path.reset();
+
+    canvas.translate(300, 0);
+    path.lineTo(80, -40);
+
+    path
+      ..arcToPoint(Offset(40, 40),
+          radius: Radius.circular(60), largeArc: true, clockwise: true)
+      ..close();
+    canvas.drawPath(path, _paint);
   }
 
   void _drawArc(Canvas canvas) {
     Path path = Path();
-    _paint
-      ..style = PaintingStyle.stroke
+    Paint paint = Paint()
+      ..color = Colors.purpleAccent
       ..strokeWidth = 2
-      ..color = Colors.red;
+      ..style = PaintingStyle.stroke;
 
     Rect rect = Rect.fromCenter(center: Offset(0, 0), width: 160, height: 100);
     path.lineTo(30, 30);
-    path.arcTo(rect, 0, pi * 1.5, true);
-    canvas.drawPath(path, _paint);
+    path..arcTo(rect, 0, pi * 1.5, true);
 
+    canvas.drawPath(path, paint);
+    path.reset();
     canvas.save();
     canvas.translate(200, 0);
     path.lineTo(30, 30);
-    path.arcTo(rect, 0, pi * 1.5, false);
-    canvas.drawPath(path, _paint);
+    path..arcTo(rect, 0, pi * 1.5, false);
+    canvas.drawPath(path, paint);
     canvas.restore();
   }
 
@@ -177,28 +228,7 @@ class PaperPainter extends CustomPainter {
     canvas.restore();
   }
 
-  //绘制x轴和y周坐标轴
-  void _drawAxis(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..strokeWidth = 1.5
-      ..color = Colors.blue;
 
-    canvas.drawLine(Offset(0, 0), Offset(0, -size.height / 2), paint);
-
-    canvas.drawLine(Offset(0, 0), Offset(0, size.height / 2), paint);
-
-    canvas.drawLine(Offset(0, 0), Offset(-size.width / 2, 0), paint);
-
-    canvas.drawLine(Offset(0, 0), Offset(-size.width / 2, 0), paint);
-
-    canvas.drawLine(Offset(0, 0), Offset(size.width / 2, 0), paint);
-
-    canvas.drawLine(Offset(size.width / 2, 0),
-        Offset(size.width / 2 - 10 - 10, -10), paint);
-
-    canvas.drawLine(
-        Offset(size.width / 2, 0), Offset(size.width / 2 - 10 - 10, 10), paint);
-  }
 
   //是否重新调用paint方法
   @override
