@@ -38,10 +38,12 @@ class MyApp extends StatelessWidget {
 }
 
 class PacMan extends StatefulWidget {
-  const PacMan({Key key, this.color,}) : super(key: key);
+  const PacMan({
+    Key key,
+    this.color,
+  }) : super(key: key);
 
   final Color color;
-
 
   @override
   State<StatefulWidget> createState() {
@@ -52,15 +54,22 @@ class PacMan extends StatefulWidget {
 class PacManState extends State<PacMan> with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
+  Animation<double> _angleCtrl;
+
+  Animation<Color> _colorCtrl;
+
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-        lowerBound: 10,
-        upperBound: 40,
-        duration: const Duration(seconds: 1),
-        vsync: this)
-      ..repeat(reverse: true);
+    _controller =
+        AnimationController(duration: const Duration(seconds: 1), vsync: this);
+
+    _angleCtrl = _controller.drive(Tween(begin: 10, end: 40));
+
+    _colorCtrl =
+        ColorTween(begin: Colors.blue, end: Colors.red).animate(_controller);
+
+    _controller.repeat(reverse: true);
   }
 
   @override
@@ -73,23 +82,26 @@ class PacManState extends State<PacMan> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return CustomPaint(
       size: Size(100, 100),
-      painter: PacManPainter(color: widget.color, angle: _controller),
+      painter: PacManPainter(
+          repaint: _controller, colorAnim: _colorCtrl, angle: _angleCtrl),
     );
   }
 }
 
 class PacManPainter extends CustomPainter {
-
   PacManPainter({
-    this.color = Colors.yellow,
+    this.repaint,
+    this.colorAnim,
     this.angle,
-  }):super(repaint: angle);
+  }) : super(repaint: repaint);
 
-  final Color color;
+  final Animation<double> repaint;
 
-  Animation<double> angle;
+  final Animation<Color> colorAnim;
 
-  Paint _paint = Paint();
+  final Animation<double> angle;
+
+  final Paint _paint = Paint();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -109,6 +121,8 @@ class PacManPainter extends CustomPainter {
     //开始角度
     var startAngle = angle.value / 180 * pi;
 
+    var color = colorAnim.value;
+
     canvas.drawArc(
         Rect.fromCenter(
             center: Offset(0, 0), width: size.width, height: size.height),
@@ -126,6 +140,6 @@ class PacManPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant PacManPainter oldDelegate) {
-    return true;
+    return oldDelegate.repaint != repaint;
   }
 }
