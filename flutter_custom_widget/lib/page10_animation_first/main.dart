@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_custom_widget/page10_animation_first/color_double.dart';
 
 void main() {
   return runApp(MyApp());
@@ -54,20 +55,11 @@ class PacMan extends StatefulWidget {
 class PacManState extends State<PacMan> with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
-  Animation<double> _angleCtrl;
-
-  Animation<Color> _colorCtrl;
-
   @override
   void initState() {
     super.initState();
     _controller =
         AnimationController(duration: const Duration(seconds: 1), vsync: this);
-
-    _angleCtrl = _controller.drive(Tween(begin: 10, end: 40));
-
-    _colorCtrl =
-        ColorTween(begin: Colors.blue, end: Colors.red).animate(_controller);
 
     _controller.repeat(reverse: true);
   }
@@ -83,7 +75,8 @@ class PacManState extends State<PacMan> with SingleTickerProviderStateMixin {
     return CustomPaint(
       size: Size(100, 100),
       painter: PacManPainter(
-          repaint: _controller, colorAnim: _colorCtrl, angle: _angleCtrl),
+        repaint: _controller,
+      ),
     );
   }
 }
@@ -91,15 +84,18 @@ class PacManState extends State<PacMan> with SingleTickerProviderStateMixin {
 class PacManPainter extends CustomPainter {
   PacManPainter({
     this.repaint,
-    this.colorAnim,
-    this.angle,
   }) : super(repaint: repaint);
 
   final Animation<double> repaint;
 
-  final Animation<Color> colorAnim;
+  // final ColorTween _colorTween = ColorTween(begin: Colors.blue,end: Colors.red);
+  //
+  // final Tween _angleTween = Tween(begin: 10,end: 40);
 
-  final Animation<double> angle;
+  ColorDoubleTween _colorDoubleTween = ColorDoubleTween(
+    begin: ColorDouble(color: Colors.blue,value: 10),
+    end: ColorDouble(color: Colors.amber,value: 40),
+  );
 
   final Paint _paint = Paint();
 
@@ -119,9 +115,13 @@ class PacManPainter extends CustomPainter {
   //绘制头
   void _drawHead(Canvas canvas, Size size) {
     //开始角度
-    var startAngle = angle.value / 180 * pi;
+  
+    // var startAngle = _angleTween.evaluate(repaint)/180 * pi;
+    //
+    // var color = _colorTween.evaluate(repaint);
 
-    var color = colorAnim.value;
+    var startAngle = _colorDoubleTween.evaluate(repaint).value/180 * pi;
+    var color = _colorDoubleTween.evaluate(repaint).color;
 
     canvas.drawArc(
         Rect.fromCenter(
