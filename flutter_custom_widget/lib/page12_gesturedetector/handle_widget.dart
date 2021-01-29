@@ -7,10 +7,13 @@ class HandleWidget extends StatefulWidget {
     Key key,
     this.size = 160,
     this.handleRadius = 20,
+    this.onMove,
   }) : super(key: key);
 
   final double size;
   final double handleRadius;
+
+  final void Function(double rotate, double distance) onMove;
 
   @override
   State<StatefulWidget> createState() {
@@ -28,14 +31,19 @@ class HandleState extends State<HandleWidget> {
       onPanUpdate: _parser,
       child: CustomPaint(
         size: Size(widget.size, widget.size),
-        painter:
-            HandlePainter(handleR: widget.handleRadius, offset: valueNotifier,color: Colors.green),
+        painter: HandlePainter(
+            handleR: widget.handleRadius,
+            offset: valueNotifier,
+            color: Colors.green),
       ),
     );
   }
 
   void _reset(DragEndDetails details) {
     valueNotifier.value = Offset.zero;
+    if (widget.onMove != null) {
+      widget.onMove(0, 0);
+    }
   }
 
   void _parser(DragUpdateDetails details) {
@@ -54,6 +62,9 @@ class HandleState extends State<HandleWidget> {
     if (d > bgR) {
       dx = bgR * cos(thta);
       dy = -bgR * sin(thta);
+    }
+    if (widget.onMove != null) {
+      widget.onMove(thta, d);
     }
     valueNotifier.value = Offset(dx, dy);
   }
@@ -92,7 +103,8 @@ class HandlePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint( HandlePainter oldDelegate)
-    => oldDelegate.handleR != handleR || oldDelegate.offset != offset || oldDelegate.color!=color;
-
+  bool shouldRepaint(HandlePainter oldDelegate) =>
+      oldDelegate.handleR != handleR ||
+      oldDelegate.offset != offset ||
+      oldDelegate.color != color;
 }
