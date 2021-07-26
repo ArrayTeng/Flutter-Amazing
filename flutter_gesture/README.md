@@ -1,6 +1,6 @@
 # flutter_gesture
 
-A new Flutter project.
+flutter滑动与触摸
 
 ## Getting Started
 
